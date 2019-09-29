@@ -21,7 +21,7 @@ cache = MemoryCache()
 
 class TagRequest:
     """
-    用户请求
+    标签请求
     """
 
     def __init__(self):
@@ -111,7 +111,7 @@ class TagRequest:
     def user_tags(self, openid):
         """
         获取用户身上的标签列表
-        :param openid:
+        :param openid: 用户标识
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/getidlist?access_token=%s' % self.access_token
