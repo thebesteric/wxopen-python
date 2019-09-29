@@ -65,10 +65,11 @@ def register_event(event_type=None):
 
 class WeChatClient:
 
-    def __init__(self, app_id, app_secret, token):
+    def __init__(self, app_id, app_secret, token, encoding_aes_key=None):
         self.app_id = app_id
         self.app_secret = app_secret
         self.token = token
+        self.encoding_aes_key = encoding_aes_key
 
         WX_OPEN_CONFIG['APP_ID'] = self.app_id
         WX_OPEN_CONFIG['APP_SECRET'] = self.app_secret
@@ -82,7 +83,8 @@ class WeChatClient:
         :param raw_data: 原生微信返回的数据格式
         :return:
         """
-
+        if self.encoding_aes_key:
+            pass
         message = parse_message(raw_data)
         _method = message.msg_type
         if message.msg_type == 'event':

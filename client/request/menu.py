@@ -1,5 +1,5 @@
 """
-微信请求服务
+微信菜单请求服务
 @project: wxopen
 @file: .py
 @ide: PyCharm

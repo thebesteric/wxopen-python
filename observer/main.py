@@ -14,6 +14,7 @@ from client.replies import *
 from client.wechat import WeChatClient, register_msg, register_event
 from exceptions import InvalidSignatureException
 from client.request.menu import MenuRequest
+from client.request.tag import TagRequest
 from client.domain.menu import Menu, Button, MatchRule
 
 app = Flask(__name__)
@@ -28,6 +29,7 @@ def index():
 
 @app.route('/menu/<string:action>', methods=['GET'])
 def menu(action):
+    """菜单测试案例"""
     menu_request = MenuRequest()
     if action == 'create':
         sub_btn_1_1 = Button(name='扫码带提示', type=Button.TYPE.SCANCODE_WAITMSG, key='SCANCODE_WAITMSG')
@@ -57,6 +59,29 @@ def menu(action):
     elif action == 'delete':
         return menu_request.delete()
 
+    return 'success'
+
+
+@app.route('/tag/<string:action>', methods=['GET'])
+def tag(action):
+    """标签测试案例"""
+    tag_request = TagRequest()
+    if action == 'create':
+        return tag_request.create('TEST TAG')
+    elif action == 'delete':
+        return tag_request.delete(100)
+    elif action == 'get':
+        return tag_request.get()
+    elif action == 'update':
+        return tag_request.update(100, 'TEST TAG UPDATE')
+    elif action == 'users':
+        return tag_request.users(100)
+    elif action == 'batch_tagging':
+        return tag_request.batch_tagging(100, 'omn8007rEC_xhRUSHvxyi7Y8pdlc', 'omn8001suYNRyOIRVt_6RmpfqfQs')
+    elif action == 'batch_untagging':
+        return tag_request.batch_untagging(100, 'omn8007rEC_xhRUSHvxyi7Y8pdlc', 'omn8001suYNRyOIRVt_6RmpfqfQs')
+    elif action == 'user_tags':
+        return tag_request.user_tags('omn8007rEC_xhRUSHvxyi7Y8pdlc')
     return 'success'
 
 
