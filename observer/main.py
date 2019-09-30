@@ -13,8 +13,7 @@ from flask import Flask, request
 from client.replies import *
 from client.wechat import WeChatClient, register_msg, register_event
 from exceptions import InvalidSignatureException
-from client.request.menu import MenuRequest
-from client.request.tag import TagRequest
+from client.request import MenuRequest, UserRequest, TagRequest
 from client.domain.menu import Menu, Button, MatchRule
 
 app = Flask(__name__)
@@ -82,6 +81,24 @@ def tag(action):
         return tag_request.batch_untagging(100, 'omn8007rEC_xhRUSHvxyi7Y8pdlc', 'omn8001suYNRyOIRVt_6RmpfqfQs')
     elif action == 'user_tags':
         return tag_request.user_tags('omn8007rEC_xhRUSHvxyi7Y8pdlc')
+    return 'success'
+
+
+@app.route('/user/<string:action>', methods=['GET'])
+def user(action):
+    user_request = UserRequest()
+    if action == 'info':
+        return user_request.info('omn8007rEC_xhRUSHvxyi7Y8pdlc')
+    elif action == 'infos':
+        return user_request.infos('omn8007rEC_xhRUSHvxyi7Y8pdlc', 'omn8001suYNRyOIRVt_6RmpfqfQs')
+    elif action == 'subscribe_list':
+        return user_request.subscribe_list()
+    elif action == 'black_list':
+        return user_request.black_list()
+    elif action == 'batch_black_list':
+        return user_request.batch_black_list('omn8007rEC_xhRUSHvxyi7Y8pdlc')
+    elif action == 'batch_un_black_list':
+        return user_request.batch_un_black_list('omn8007rEC_xhRUSHvxyi7Y8pdlc')
     return 'success'
 
 

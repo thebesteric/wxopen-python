@@ -1,10 +1,5 @@
-"""
+__all__ = ['MenuRequest', 'TagRequest', 'UserRequest']
 
-@project: wxopen
-@file: .py
-@ide: PyCharm
-@auth: Eric Joe
-@email: whatisjava@hotmail.com
-@build: 2019/9/27 19:16
-@info: 
-"""
+from client.request.menu import MenuRequest
+from client.request.tag import TagRequest
+from client.request.user import UserRequest
