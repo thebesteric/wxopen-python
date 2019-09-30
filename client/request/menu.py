@@ -11,7 +11,7 @@
 
 import requests
 from client.replies import WeChatResponse
-from cache.DefaultCache import MemoryCache
+from cache.cache import MemoryCache
 from client.constants import ACCESS_TOKEN
 import json
 

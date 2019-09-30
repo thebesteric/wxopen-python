@@ -9,6 +9,20 @@ def singleton(cls):
     return _singleton
 
 
+def get_cache_instance(cache_name):
+    """
+    获取缓存实例
+    :param cache_name: 缓存名称
+    :return:
+    """
+    _cache = MemoryCache()
+    if cache_name.lower() == 'redis':
+        pass
+    elif cache_name.lower() == 'default':
+        _cache = MemoryCache()
+    return _cache
+
+
 @singleton
 class MemoryCache:
 

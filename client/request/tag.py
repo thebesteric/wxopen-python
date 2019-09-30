@@ -12,7 +12,7 @@ import json
 
 import requests
 
-from cache.DefaultCache import MemoryCache
+from cache.cache import MemoryCache
 from client.constants import ACCESS_TOKEN
 from client.replies import WeChatResponse
 

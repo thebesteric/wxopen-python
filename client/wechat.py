@@ -10,7 +10,7 @@
 """
 import hashlib
 
-from cache.DefaultCache import MemoryCache
+from cache.cache import get_cache_instance
 from client.messages import parse_message
 from client.replies import SuccessReply
 from client.task import task_start
@@ -18,7 +18,7 @@ from exceptions import *
 from client.constants import ACCESS_TOKEN
 from settings import WX_OPEN_CONFIG
 
-memory_cache = MemoryCache()
+memory_cache = get_cache_instance('default')
 
 funcs = {}
 
