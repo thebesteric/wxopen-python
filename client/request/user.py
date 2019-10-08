@@ -10,20 +10,14 @@
 """
 import requests
 import json
-from cache.cache import MemoryCache
-from client.constants import ACCESS_TOKEN
 from client.replies import WeChatResponse
+from client.request.base.wxrequest import WeChatRequest
 
-cache = MemoryCache()
 
-
-class UserRequest:
+class UserRequest(WeChatRequest):
     """
     用户请求
     """
-
-    def __init__(self):
-        self.access_token = cache.get(ACCESS_TOKEN)
 
     def update_remark(self, openid, remark):
         """

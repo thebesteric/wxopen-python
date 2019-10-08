@@ -12,20 +12,14 @@ import json
 
 import requests
 
-from cache.cache import MemoryCache
-from client.constants import ACCESS_TOKEN
 from client.replies import WeChatResponse
+from client.request.base.wxrequest import WeChatRequest
 
-cache = MemoryCache()
 
-
-class TagRequest:
+class TagRequest(WeChatRequest):
     """
     标签请求
     """
-
-    def __init__(self):
-        self.access_token = cache.get(ACCESS_TOKEN)
 
     def create(self, name):
         """
