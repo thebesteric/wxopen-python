@@ -31,28 +31,35 @@ class WeChatException(Exception):
 
 
 class InvalidSignatureException(WeChatException):
-    """Invalid Signature Exception"""
+    """错误的签名"""
 
     def __init__(self, errcode=-40001, errmsg='Invalid Signature'):
         super().__init__(errcode, errmsg)
 
 
 class MissingParametersException(WeChatException):
-    """Missing Parameters Exception"""
+    """缺失参数"""
 
     def __init__(self, errcode=-60000, errmsg='Missing Parameters'):
         super().__init__(errcode, errmsg)
 
 
 class UnimplementedMsgMethodException(WeChatException):
-    """Unimplemented Message Method  Exception"""
+    """未实现的方法"""
 
     def __init__(self, errcode=-60001, errmsg='Unimplemented Message Method', method=None):
         super().__init__(errcode, errmsg + ': ' + method if method else errmsg)
 
 
 class UnsupportedParameterTypesException(WeChatException):
-    """Unsupported Parameter Types Exception"""
+    """不支持的参数类型"""
 
     def __init__(self, errcode=-60002, errmsg='Unsupported Parameter Types', param_type=None):
         super().__init__(errcode, errmsg + ': ' + param_type if param_type else errmsg)
+
+
+class ValidationException(WeChatException):
+    """校验错误"""
+
+    def __init__(self, errcode=-60003, errmsg='Validation Exception'):
+        super().__init__(errcode, errmsg)
