@@ -10,11 +10,11 @@
 """
 from flask import Flask, request
 
+from client.domain.menu import Menu, Button, MatchRule
 from client.replies import *
+from client.request import MenuRequest, UserRequest, TagRequest, AccountRequest
 from client.wechat import WeChatClient, register_msg, register_event
 from exceptions import InvalidSignatureException
-from client.request import MenuRequest, UserRequest, TagRequest
-from client.domain.menu import Menu, Button, MatchRule
 
 app = Flask(__name__)
 
@@ -24,6 +24,21 @@ client = WeChatClient('wx6dbc04ce2e617787', '10907e76e8268395804ecd33de83da74', 
 @app.route('/', methods=['GET'])
 def index():
     return "index"
+
+
+@app.route('/account/<string:action>', methods=['GET'])
+def account(action):
+    account_request = AccountRequest()
+    if action == 'create_qr_scene':  # 创建临时整型参数值的二维码
+        return account_request.create_qr_scene(1234, 3600)
+    elif action == 'create_qr_str_scene':  # 创建临时字符串参数值的二维码
+        return account_request.create_qr_str_scene('test', 3600)
+    elif action == 'create_limit_qr_scene':  # 创建永久整型参数值的二维码
+        return account_request.create_limit_qr_scene(1234)
+    elif action == 'create_limit_qr_str_scene':  # 创建永久字符串参数值的二维码
+        return account_request.create_limit_qr_str_scene('test')
+
+    return 'success'
 
 
 @app.route('/menu/<string:action>', methods=['GET'])
