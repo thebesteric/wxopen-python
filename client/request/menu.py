@@ -9,9 +9,6 @@
 @info: 
 """
 
-import requests
-from client.replies import WeChatResponse
-import json
 from client.request.base.wxrequest import WeChatRequest
 
 
@@ -27,8 +24,8 @@ class MenuRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/menu/create?access_token=%s' % self.access_token
-        content = requests.post(url, data=menu.to_json().encode('utf8')).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, data=menu.to_json().encode('utf8')).content.decode('utf8')
+        return self.render(content)
 
     def delete(self):
         """
@@ -37,8 +34,8 @@ class MenuRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/menu/delete?access_token=%s' % self.access_token
-        content = requests.get(url).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.get(url).content.decode('utf8')
+        return self.render(content)
 
     def info(self):
         """
@@ -46,8 +43,8 @@ class MenuRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/get_current_selfmenu_info?access_token=%s' % self.access_token
-        content = requests.get(url).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.get(url).content.decode('utf8')
+        return self.render(content)
 
     def get(self):
         """
@@ -55,8 +52,8 @@ class MenuRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/menu/get?access_token=%s' % self.access_token
-        content = requests.get(url).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.get(url).content.decode('utf8')
+        return self.render(content)
 
     def create_conditional(self, menu):
         """
@@ -87,8 +84,8 @@ class MenuRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/menu/addconditional?access_token=%s' % self.access_token
-        content = requests.post(url, data=menu.to_json().encode('utf8')).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, data=menu.to_json().encode('utf8')).content.decode('utf8')
+        return self.render(content)
 
     def delete_conditional(self, menu_id):
         """
@@ -97,8 +94,8 @@ class MenuRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/menu/delconditional?access_token=%s' % self.access_token
-        content = requests.post(url, json={'menuid': menu_id}).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json={'menuid': menu_id}).content.decode('utf8')
+        return self.render(content)
 
     def try_match(self, user_id):
         """
@@ -107,5 +104,5 @@ class MenuRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/menu/trymatch?access_token=%s' % self.access_token
-        content = requests.post(url, json={'user_id': user_id}).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json={'user_id': user_id}).content.decode('utf8')
+        return self.render(content)

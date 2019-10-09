@@ -8,11 +8,7 @@
 @build: 2019/9/29 12:18
 @info: 
 """
-import json
 
-import requests
-
-from client.replies import WeChatResponse
 from client.request.base.wxrequest import WeChatRequest
 
 
@@ -29,8 +25,8 @@ class TagRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/create?access_token=%s' % self.access_token
         data = {'tag': {'name': name}}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def get(self):
         """
@@ -39,8 +35,8 @@ class TagRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/get?access_token=%s' % self.access_token
-        content = requests.get(url).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.get(url).content.decode('utf8')
+        return self.render(content)
 
     def update(self, id, name):
         """
@@ -51,8 +47,8 @@ class TagRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/update?access_token=%s' % self.access_token
         data = {'tag': {'id': id, 'name': name}}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def delete(self, id):
         """
@@ -63,8 +59,8 @@ class TagRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/delete?access_token=%s' % self.access_token
         data = {'tag': {'id': id}}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def users(self, tagid, next_openid=''):
         """
@@ -75,8 +71,8 @@ class TagRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/user/tag/get?access_token=%s' % self.access_token
         data = {"tagid": tagid, "next_openid": next_openid}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def batch_tagging(self, tagid, *openids):
         """
@@ -87,8 +83,8 @@ class TagRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchtagging?access_token=%s' % self.access_token
         data = {"tagid": tagid, "openid_list": list(openids)}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def batch_untagging(self, tagid, *openids):
         """
@@ -99,8 +95,8 @@ class TagRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchuntagging?access_token=%s' % self.access_token
         data = {"tagid": tagid, "openid_list": list(openids)}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def user_tags(self, openid):
         """
@@ -110,5 +106,5 @@ class TagRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/getidlist?access_token=%s' % self.access_token
         data = {"openid": openid}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)

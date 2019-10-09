@@ -8,12 +8,15 @@
 @build: 2019/10/8 14:47
 @info: 
 """
+import json
 from io import StringIO
 
 import pycurl
+import requests
 
 from cache.cache import MemoryCache
 from client.constants import ACCESS_TOKEN
+from client.domain import wxerror
 
 cache = MemoryCache()
 
@@ -25,8 +28,18 @@ class WeChatRequest:
 
     def __init__(self):
         self.__cache = cache
+        self.requests = requests
         self.pycurl = pycurl
         self.access_token = self.__cache.get(ACCESS_TOKEN)
+
+    @staticmethod
+    def render(content):
+        if not isinstance(content, dict):
+            content = json.loads(content, encoding='utf8')
+        errcode = content.get('errcode', 0)
+        if errcode:
+            content.update({'errmsg_desc': wxerror.ERROR_CODE.get(str(errcode), '')})
+        return content
 
     def get_cache(self):
         """

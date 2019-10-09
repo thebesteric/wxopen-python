@@ -8,30 +8,11 @@
 @build: 2019/9/25 17:07
 @info: 
 """
-import json
 import time
 
 import xmltodict
 
 from client.constants import MsgType
-from client.domain import wxerror
-
-
-class WeChatResponse:
-    """
-    消息响应
-    一般用于接收通用的执行结果响应
-    """
-
-    def __init__(self, data):
-        if not isinstance(data, dict):
-            data = json.loads(data, encoding='utf8')
-        self.errcode, self.errmsg = data.get('errcode', 0), data.get('errmsg', 'success')
-        self.errmsg_desc = wxerror.ERROR_CODE.get(str(self.errcode), '')
-        # self.data = data
-
-    def render(self):
-        return self.__dict__
 
 
 class BaseReply:

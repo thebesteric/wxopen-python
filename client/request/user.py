@@ -8,9 +8,6 @@
 @build: 2019/9/29 15:08
 @info: 
 """
-import requests
-import json
-from client.replies import WeChatResponse
 from client.request.base.wxrequest import WeChatRequest
 
 
@@ -29,8 +26,8 @@ class UserRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/user/info/updateremark?access_token=%s' % self.access_token
         data = {'openid': openid, 'remark': remark}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def info(self, openid, lang='zh_CN'):
         """
@@ -40,8 +37,8 @@ class UserRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/user/info'
-        content = requests.get(url, params={'access_token': self.access_token, 'openid': openid, 'lang': lang}).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.get(url, params={'access_token': self.access_token, 'openid': openid, 'lang': lang}).content.decode('utf8')
+        return self.render(content)
 
     def infos(self, *openids, lang='zh_CN'):
         """
@@ -52,8 +49,8 @@ class UserRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/user/info/batchget?access_token=%s' % self.access_token
         data = {'user_list': [{'openid': openid, 'lang': lang} for openid in openids]}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def subscribe_list(self, next_openid=''):
         """
@@ -63,8 +60,8 @@ class UserRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/user/get?access_token=%s&next_openid=%s' % (self.access_token, next_openid)
-        content = requests.get(url).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.get(url).content.decode('utf8')
+        return self.render(content)
 
     def black_list(self, begin_openid=''):
         """
@@ -74,8 +71,8 @@ class UserRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/members/getblacklist?access_token=%s' % self.access_token
         data = {'begin_openid': begin_openid}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def batch_black_list(self, *openids):
         """
@@ -85,8 +82,8 @@ class UserRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchblacklist?access_token=%s' % self.access_token
         data = {"openid_list": [openid for openid in openids]}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def batch_un_black_list(self, *openids):
         """
@@ -96,5 +93,5 @@ class UserRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/tags/members/batchunblacklist?access_token=%s' % self.access_token
         data = {"openid_list": [openid for openid in openids]}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)

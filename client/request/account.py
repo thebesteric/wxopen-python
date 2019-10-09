@@ -9,10 +9,8 @@
 @info: 
 """
 
-from client.request.base.wxrequest import WeChatRequest
-import json
-import requests
 import exceptions
+from client.request.base.wxrequest import WeChatRequest
 
 
 class AccountRequest(WeChatRequest):
@@ -36,8 +34,8 @@ class AccountRequest(WeChatRequest):
             elif expire_seconds > 2592000:
                 expire_seconds = 2592000
             data.update({'expire_seconds': expire_seconds})
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def create_qr_scene(self, scene_id, expire_seconds=2592000):
         """
@@ -106,7 +104,7 @@ class AccountRequest(WeChatRequest):
         :return: 流
         """
         url = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s' % ticket
-        content = requests.get(url).content
+        content = self.requests.get(url).content
         return content
 
     def short_url(self, long_url):
@@ -117,5 +115,5 @@ class AccountRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/shorturl?access_token=%s' % self.access_token
         data = {'action': 'long2short', 'long_url': long_url}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)

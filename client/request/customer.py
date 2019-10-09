@@ -7,9 +7,6 @@
 @info: 
 """
 from client.request.base.wxrequest import WeChatRequest
-import requests
-from client.replies import WeChatResponse
-import json
 
 
 class CustomerRequest(WeChatRequest):
@@ -27,8 +24,8 @@ class CustomerRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/customservice/kfaccount/add?access_token=%s' % self.access_token
         data = {"kf_account": kf_account, "nickname": nickname, "password": password}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def update_customer(self, kf_account, nickname, password):
         """
@@ -40,8 +37,8 @@ class CustomerRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/customservice/kfaccount/update?access_token=%s' % self.access_token
         data = {"kf_account": kf_account, "nickname": nickname, "password": password}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def delete_customer(self, kf_account, nickname, password):
         """
@@ -53,8 +50,8 @@ class CustomerRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/customservice/kfaccount/del?access_token=%s' % self.access_token
         data = {"kf_account": kf_account, "nickname": nickname, "password": password}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def upload_head_img(self, kf_account, img_path):
         """
@@ -80,8 +77,8 @@ class CustomerRequest(WeChatRequest):
         :return:
         """
         url = 'https://api.weixin.qq.com/cgi-bin/customservice/getkflist?access_token=%s' % self.access_token
-        content = requests.get(url).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.get(url).content.decode('utf8')
+        return self.render(content)
 
     def send(self, touser, msg_type, msg, kf_account=None):
         """
@@ -99,8 +96,8 @@ class CustomerRequest(WeChatRequest):
         data.update(msg)
         if kf_account:
             data.update({'customservice': {'kf_account': kf_account}})
-        content = requests.post(url, json=data).content.decode('utf8')
-        return json.loads(content, encoding='utf8')
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def send_text(self, touser, content, customer_account=None):
         """
@@ -260,8 +257,8 @@ class CustomerRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/message/custom/typing?access_token=%s' % self.access_token
         data = {'touser': touser, 'command': 'Typing'}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
 
     def send_typing_cancel(self, touser):
         """
@@ -271,5 +268,5 @@ class CustomerRequest(WeChatRequest):
         """
         url = 'https://api.weixin.qq.com/cgi-bin/message/custom/typing?access_token=%s' % self.access_token
         data = {'touser': touser, 'command': 'CancelTyping'}
-        content = requests.post(url, json=data).content.decode('utf8')
-        return WeChatResponse(content).render()
+        content = self.requests.post(url, json=data).content.decode('utf8')
+        return self.render(content)
