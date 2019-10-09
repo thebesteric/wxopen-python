@@ -108,3 +108,14 @@ class AccountRequest(WeChatRequest):
         url = 'https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=%s' % ticket
         content = requests.get(url).content
         return content
+
+    def short_url(self, long_url):
+        """
+        长链接转成短链接
+        :param long_url: 长链接
+        :return: 短链接
+        """
+        url = 'https://api.weixin.qq.com/cgi-bin/shorturl?access_token=%s' % self.access_token
+        data = {'action': 'long2short', 'long_url': long_url}
+        content = requests.post(url, json=data).content.decode('utf8')
+        return json.loads(content, encoding='utf8')

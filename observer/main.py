@@ -37,6 +37,8 @@ def account(action):
         return account_request.create_limit_qr_scene(1234)
     elif action == 'create_limit_qr_str_scene':  # 创建永久字符串参数值的二维码
         return account_request.create_limit_qr_str_scene('test')
+    elif action == 'short_url':  # 长连接转短链接
+        return account_request.short_url('http://127.0.0.1:8000?id=1000&name=zhagnsan&age=18')
 
     return 'success'
 
