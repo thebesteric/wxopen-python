@@ -19,7 +19,7 @@ def parse_message(raw_message):
     :return: dict
     """
     xml_dict = xmltodict.parse(raw_message).get('xml')
-    msg_type = xml_dict.get('MsgType')
+    msg_type = xml_dict.get('MsgType').lower()
     message = BaseMessage(xml_dict)
     if msg_type == 'text':
         message = TextMessage(xml_dict)
@@ -103,11 +103,15 @@ class TextMessage(BaseMessage):
     文本消息
     MsgType: text
     Content: 文本消息内容
+    bizmsgmenuid: 点击的菜单ID, 当用户点击客服消息中的菜单消息时，会触发此消息，生成此字段
     """
 
     def __init__(self, xml_dict):
         super().__init__(xml_dict)
         self.content = xml_dict.get('Content')
+        biz_msg_menu_id = xml_dict.get('bizmsgmenuid')
+        if biz_msg_menu_id:
+            self.biz_msg_menu_id = biz_msg_menu_id
 
     def __str__(self):
         return str(self.__dict__)

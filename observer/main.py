@@ -12,9 +12,10 @@ from flask import Flask, request
 
 from client.domain.menu import Menu, Button, MatchRule
 from client.replies import *
-from client.request import MenuRequest, UserRequest, TagRequest, AccountRequest
+from client.request import MenuRequest, UserRequest, TagRequest, AccountRequest, CustomerRequest
 from client.wechat import WeChatClient, register_msg, register_event
 from exceptions import InvalidSignatureException
+from utils import crypto
 
 app = Flask(__name__)
 
@@ -24,6 +25,14 @@ client = WeChatClient('wx6dbc04ce2e617787', '10907e76e8268395804ecd33de83da74', 
 @app.route('/', methods=['GET'])
 def index():
     return "index"
+
+
+@app.route('/customer/<string:action>', methods=['GET'])
+def customer(action):
+    customer_request = CustomerRequest()
+    if action == 'list':
+        return customer_request.list_customers()
+    return 'success'
 
 
 @app.route('/account/<string:action>', methods=['GET'])
