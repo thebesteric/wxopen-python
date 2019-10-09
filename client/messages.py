@@ -10,8 +10,6 @@
 """
 
 import xmltodict
-import json
-from client.domain import wxerror
 
 
 def parse_message(raw_message):
@@ -47,12 +45,20 @@ def parse_message(raw_message):
             message = EventLocationMessage(xml_dict)
         elif event == 'click':
             message = EventClickMessage(xml_dict)
-        elif event in ['view', 'view_miniprogram']:
+        elif event in ('view', 'view_miniprogram'):
             message = EventViewMessage(xml_dict)
-        elif event in ['scancode_push', 'scancode_waitmsg']:
+        elif event in ('scancode_push', 'scancode_waitmsg'):
             message = EventScanCodeMessage(xml_dict)
-        elif event in ['pic_sysphoto', 'pic_photo_or_album', 'pic_weixin']:
+        elif event in ('pic_sysphoto', 'pic_photo_or_album', 'pic_weixin'):
             message = EventPicPhotoMessage(xml_dict)
+        elif event in ('qualification_verify_success', 'naming_verify_success'):
+            message = EventCertificationVerifySuccessMessage(xml_dict)
+        elif event in ('qualification_verify_fail', 'naming_verify_fail'):
+            message = EventCertificationVerifyFailMessage(xml_dict)
+        elif event == 'verify_expired':
+            message = EventCertificationExpiredMessage(xml_dict)
+        elif event == 'annual_renew':
+            message = EventAnnualRenewMessage(xml_dict)
     return message
 
 
@@ -343,13 +349,13 @@ class EventScanCodeMessage(BaseEventMessage):
 class EventPicPhotoMessage(BaseEventMessage):
     """
     菜单事件: 拍照事件
+    MsgType: event
     1、弹出系统拍照发图的事件推送
         Event: pic_sysphoto
     2、弹出拍照或者相册发图的事件推送
         Event: pic_photo_or_album
     3、弹出微信相册发图器的事件推送
         Event: pic_weixin
-    MsgType: event
     EventKey: 事件KEY值，设置的跳转URL
     SendPicsInfo: 发送的图片信息
         Count: 发送的图片数量
@@ -405,3 +411,63 @@ class EventLocationSelectMessage(BaseEventMessage):
         super().__init__(xml_dict)
         self.event_key = xml_dict.get('EventKey')
         self.send_location_info = self.SendLocationInfo(xml_dict.get('SendLocationInfo'))
+
+
+class EventCertificationVerifySuccessMessage(BaseEventMessage):
+    """
+    认证成功事件:
+    MsgType: event
+    1、资质认证成功: 立即获得接口权限，公众号就获得了认证相关接口权限，资质认证成功一定发生在名称认证成功之前
+        Event: qualification_verify_success
+    2、名称认证成功: 名称认证成功后，公众号才在微信客户端中获得打勾认证标识
+        Event: naming_verify_success
+    ExpiredTime: 有效期 (整形)，指的是时间戳，将于该时间戳认证过期
+    """
+
+    def __init__(self, xml_dict):
+        super().__init__(xml_dict)
+        self.expired_time = xml_dict.get('ExpiredTime')
+
+
+class EventCertificationVerifyFailMessage(BaseEventMessage):
+    """
+    认证失败事件:
+    MsgType: event
+    1、资质认证失败
+        Event: qualification_verify_fail
+    2、名称认证失败: 这时虽然客户端不打勾，但仍有接口权限
+        Event: naming_verify_fail
+    FailTime: 失败发生时间 (整形)，时间戳
+    FailReason: 认证失败的原因
+    """
+
+    def __init__(self, xml_dict):
+        super().__init__(xml_dict)
+        self.fail_time = xml_dict.get('FailTime')
+        self.fail_reason = xml_dict.get('FailReason')
+
+
+class EventCertificationExpiredMessage(BaseEventMessage):
+    """
+    认证过期失效通知事件:
+    MsgType: event
+    Event: verify_expired
+    ExpiredTime: 有效期 (整形)，指的是时间戳，表示已于该时间戳认证过期，需要重新发起微信认证
+    """
+
+    def __init__(self, xml_dict):
+        super().__init__(xml_dict)
+        self.expired_time = xml_dict.get('ExpiredTime')
+
+
+class EventAnnualRenewMessage(BaseEventMessage):
+    """
+    年审通知事件: 提醒公众号需要去年审
+    MsgType: event
+    Event: annual_renew
+    ExpiredTime: 有效期 (整形)，指的是时间戳，将于该时间戳认证过期，需尽快年审
+    """
+
+    def __init__(self, xml_dict):
+        super().__init__(xml_dict)
+        self.expired_time = xml_dict.get('ExpiredTime')

@@ -86,14 +86,12 @@ class WeChatClient:
         if self.encoding_aes_key:
             pass
         message = parse_message(raw_data)
-        _method = message.msg_type
         if message.msg_type == 'event':
-            _method = message.event
             if funcs.get(message.event.lower()):
                 return funcs.get(message.event.lower())(message)
         else:
-            if funcs.get(message.msg_type):
-                return funcs.get(message.msg_type)(message)
+            if funcs.get(message.msg_type.lower()):
+                return funcs.get(message.msg_type.lower())(message)
         print(UnimplementedMsgMethodException(method=message.msg_type))
         return SuccessReply().render()
 
