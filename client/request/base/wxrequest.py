@@ -9,14 +9,13 @@
 @info: 
 """
 import json
-from io import StringIO
 
-import pycurl
 import requests
 
 from cache.cache import MemoryCache
 from client.constants import ACCESS_TOKEN
 from client.domain import wxerror
+import exceptions
 
 cache = MemoryCache()
 
@@ -29,8 +28,8 @@ class WeChatRequest:
     def __init__(self):
         self.__cache = cache
         self.requests = requests
-        self.pycurl = pycurl
         self.access_token = self.__cache.get(ACCESS_TOKEN)
+        self.exceptions = exceptions
 
     @staticmethod
     def render(content):
@@ -48,17 +47,23 @@ class WeChatRequest:
         """
         return self.__cache
 
-    def get_curl(self):
+    def get_suffix(self, path):
         """
-        获取curl
-        :return: (curl, fp)
+        获取文件后缀名
+        :param path: 文件路径
+        :return:
         """
-        curl = self.pycurl.Curl()
-        fp = StringIO()
-        curl.setopt(pycurl.WRITEFUNCTION, fp.write)
-        curl.setopt(pycurl.FOLLOWLOCATION, 1)
-        curl.setopt(pycurl.MAXREDIRS, 5)
-        curl.setopt(pycurl.CONNECTTIMEOUT, 60)
-        curl.setopt(pycurl.TIMEOUT, 300)
-        curl.setopt(pycurl.HEADER, 1)
-        return curl, fp
+        pos = path.rfind('.')
+        return path[pos + 1:]
+
+    def validate_suffix(self, path, suffix_arr):
+        """
+        校验文件后缀
+        :param path: 文件路径
+        :param suffix_arr: 支持的文件类型
+        :return:
+        """
+        suffix_arr = [suffix.lower() for suffix in suffix_arr]
+        suffix = self.get_suffix(path).lower()
+        if suffix not in suffix_arr:
+            raise self.exceptions.ValidationException('File types must be in: %s' % suffix_arr)
