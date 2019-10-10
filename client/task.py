@@ -28,7 +28,7 @@ def get_access_token():
     content = json.loads(requests.get(url).content.decode('utf-8'))
     access_token = content.get(ACCESS_TOKEN)
     if access_token:
-        memory_cache.set('access_token', access_token)
+        memory_cache.set(ACCESS_TOKEN, access_token)
         logger.info('Get ACCESS_TOKEN succeed: %s' % ('*' * 6))
     else:
         errcode = str(content.get('errcode'))

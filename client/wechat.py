@@ -17,6 +17,7 @@ from client.task import task_start
 from exceptions import *
 from client.constants import ACCESS_TOKEN
 from settings import WX_OPEN_CONFIG
+from utils.WXBizMsgCrypt import WXBizMsgCrypt
 
 memory_cache = get_cache_instance('default')
 
@@ -66,15 +67,21 @@ def register_event(event_type=None):
 class WeChatClient:
 
     def __init__(self, app_id, app_secret, token, encoding_aes_key=None):
-        self.app_id = app_id
-        self.app_secret = app_secret
-        self.token = token
-        self.encoding_aes_key = encoding_aes_key
+        self.app_id = app_id if app_id else WX_OPEN_CONFIG['APP_ID']
+        self.app_secret = app_secret if app_secret else WX_OPEN_CONFIG['APP_SECRET']
+        self.token = token if token else WX_OPEN_CONFIG['TOKEN']
+        self.encoding_aes_key = encoding_aes_key if encoding_aes_key else WX_OPEN_CONFIG['ENCODING_AES_KEY']
+
+        self.signature = None
+        self.timestamp = None
+        self.nonce = None
 
         WX_OPEN_CONFIG['APP_ID'] = self.app_id
         WX_OPEN_CONFIG['APP_SECRET'] = self.app_secret
         WX_OPEN_CONFIG['TOKEN'] = self.token
+        WX_OPEN_CONFIG['ENCODING_AES_KEY'] = self.encoding_aes_key
 
+        # 启动计划任务
         task_start()
 
     def process(self, raw_data):
@@ -84,7 +91,9 @@ class WeChatClient:
         :return:
         """
         if self.encoding_aes_key:
-            pass
+            decrypt = WXBizMsgCrypt(self.token, self.encoding_aes_key, self.app_id)
+            ret, raw_data = decrypt.DecryptMsg(raw_data, self.signature, self.timestamp, self.nonce)
+
         message = parse_message(raw_data)
         if message.msg_type == 'event':
             if funcs.get(message.event.lower()):
@@ -116,6 +125,10 @@ class WeChatClient:
         # 与微信服务器进行签名对比
         if _signature != signature:
             raise InvalidSignatureException()
+
+        self.signature = signature
+        self.timestamp = timestamp
+        self.nonce = nonce
 
         return True
 

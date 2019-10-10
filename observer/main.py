@@ -15,7 +15,6 @@ from client.replies import *
 from client.request import MenuRequest, UserRequest, TagRequest, AccountRequest, CustomerRequest
 from client.wechat import WeChatClient, register_msg, register_event
 from exceptions import InvalidSignatureException
-from utils import crypto
 
 app = Flask(__name__)
 

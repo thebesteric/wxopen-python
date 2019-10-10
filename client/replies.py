@@ -13,6 +13,9 @@ import time
 import xmltodict
 
 from client.constants import MsgType
+from utils.WXBizMsgCrypt import WXBizMsgCrypt
+from settings import WX_OPEN_CONFIG
+import random
 
 
 class BaseReply:
@@ -35,7 +38,14 @@ class BaseReply:
         return {'xml': self.__dict__}
 
     def render(self):
-        return xmltodict.unparse(self.dict())
+        xml_response = xmltodict.unparse(self.dict())
+        if WX_OPEN_CONFIG['ENCODING_AES_KEY']:
+            encrypt = WXBizMsgCrypt(WX_OPEN_CONFIG['token'], WX_OPEN_CONFIG['ENCODING_AES_KEY'], WX_OPEN_CONFIG['APP_ID'])
+            ret, xml_response = encrypt.EncryptMsg(xml_response, self._get_nonce())
+        return xml_response
+
+    def _get_nonce(self):
+        return ''.join([str(random.randint(0, 9)) for i in range(10)])
 
 
 class SuccessReply(BaseReply):
