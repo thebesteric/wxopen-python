@@ -7,7 +7,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from client.domain import wxerror
 from settings import WX_OPEN_CONFIG
 from cache.cache import get_cache_instance
-from client.constants import ACCESS_TOKEN
+from constants import ACCESS_TOKEN
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)

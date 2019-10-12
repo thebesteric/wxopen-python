@@ -15,7 +15,7 @@ from client.messages import parse_message
 from client.replies import SuccessReply
 from client.task import task_start
 from exceptions import *
-from client.constants import ACCESS_TOKEN
+from constants import ACCESS_TOKEN
 from settings import WX_OPEN_CONFIG
 from utils.WXBizMsgCrypt import WXBizMsgCrypt
 
@@ -82,7 +82,7 @@ class WeChatClient:
         WX_OPEN_CONFIG['ENCODING_AES_KEY'] = self.encoding_aes_key
 
         # 启动计划任务
-        task_start()
+        task_start('client')
 
     def process(self, raw_data):
         """
