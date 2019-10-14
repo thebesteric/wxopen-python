@@ -10,7 +10,7 @@
 """
 
 import exceptions
-from client.request.base.wxrequest import WeChatRequest
+from wxrequest import WeChatRequest
 
 
 class AccountRequest(WeChatRequest):

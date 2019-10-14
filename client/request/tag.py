@@ -9,7 +9,7 @@
 @info: 
 """
 
-from client.request.base.wxrequest import WeChatRequest
+from wxrequest import WeChatRequest
 
 
 class TagRequest(WeChatRequest):

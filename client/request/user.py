@@ -8,7 +8,7 @@
 @build: 2019/9/29 15:08
 @info: 
 """
-from client.request.base.wxrequest import WeChatRequest
+from wxrequest import WeChatRequest
 
 
 class UserRequest(WeChatRequest):

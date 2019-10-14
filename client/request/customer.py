@@ -6,13 +6,18 @@
 @build: 2019/10/9 14:11
 @info: 
 """
-from client.request.base.wxrequest import WeChatRequest
+from wxrequest import WeChatRequest
 
 
 class CustomerRequest(WeChatRequest):
     """
     客服消息服务
     """
+
+    def __init__(self, access_token=None):
+        super().__init__()
+        if access_token:
+            self.access_token = access_token
 
     def add_customer(self, kf_account, nickname, password):
         """
@@ -56,20 +61,12 @@ class CustomerRequest(WeChatRequest):
     def upload_head_img(self, kf_account, img_path):
         """
         设置客服帐号的头像
-        eg. curl -F media=@test.jpg "https://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token=ACCESS_TOKEN&kf_account=KFACCOUNT"
         :return:
         """
         url = 'http://api.weixin.qq.com/customservice/kfaccount/uploadheadimg?access_token=%s&kf_account=%s' % (self.access_token, kf_account)
-        curl, fp = self.get_curl()
-        curl.setopt(self.pycurl.POST, 1)
-        curl.setopt(self.pycurl.URL, url)
-        curl.setopt(self.pycurl.HTTPPOST, [('media', (self.pycurl.FILE, img_path))])
-        curl.perform()
-        body = fp.getvalue()
-        fp.close()
-        curl.close()
-
-        return body
+        files = {'media': (img_path, open(img_path, 'rb'), 'image/*', {})}
+        content = self.requests.post(url, files=files).content.decode('utf8')
+        return self.render(content)
 
     def list_customers(self):
         """
@@ -99,12 +96,12 @@ class CustomerRequest(WeChatRequest):
         content = self.requests.post(url, json=data).content.decode('utf8')
         return self.render(content)
 
-    def send_text(self, touser, content, customer_account=None):
+    def send_text(self, touser, content, kf_account=None):
         """
         发送文本消息
         :param touser: 消息接收人的OPENID
         :param content: 消息内容
-        :param customer_account: 以某个客服帐号来发消息
+        :param kf_account: 以某个客服帐号来发消息
 
         支持插入跳小程序的文字链：<a href="http://www.qq.com" data-miniprogram-appid="appid" data-miniprogram-path="pages/index/index">点击跳小程序</a>
         1.data-miniprogram-appid 项，填写小程序appid，则表示该链接跳小程序；
@@ -115,7 +112,7 @@ class CustomerRequest(WeChatRequest):
         :return:
         """
         msg = {'text': {'content': content}}
-        self.send(touser, 'text', msg, customer_account)
+        self.send(touser, 'text', msg, kf_account)
 
     def send_image(self, touser, media_id, kf_account=None):
         """

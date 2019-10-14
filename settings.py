@@ -4,3 +4,10 @@ WX_OPEN_CONFIG = {
     'TOKEN': None,
     'ENCODING_AES_KEY': None
 }
+
+WX_OPEN_THIRD_CONFIG = {
+    'COMPONENT_APP_ID': None,
+    'COMPONENT_APP_SECRET': None,
+    'COMPONENT_TOKEN': None,
+    'COMPONENT_ENCODING_AES_KEY': None,
+}

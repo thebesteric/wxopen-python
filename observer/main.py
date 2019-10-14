@@ -12,8 +12,8 @@ from flask import Flask, request
 
 from client.domain.menu import Menu, Button, MatchRule
 from client.replies import *
-from client.request import MenuRequest, UserRequest, TagRequest, AccountRequest, CustomerRequest
-from client.wechat import WeChatClient, register_msg, register_event
+from client.request import MenuRequest, UserRequest, TagRequest, AccountRequest, CustomerRequest, MaterialRequest
+from wechat import WeChatClient, register_msg, register_event
 from exceptions import InvalidSignatureException
 
 app = Flask(__name__)
@@ -24,6 +24,14 @@ client = WeChatClient('wx6dbc04ce2e617787', '10907e76e8268395804ecd33de83da74', 
 @app.route('/', methods=['GET'])
 def index():
     return "index"
+
+
+@app.route('/material/<string:action>', methods=['GET'])
+def material(action):
+    material_request = MaterialRequest()
+    if action == 'upload_image':
+        return material_request.upload_temp_image_material('C:/Users/y/Desktop/test.png')
+    return 'success'
 
 
 @app.route('/customer/<string:action>', methods=['GET'])

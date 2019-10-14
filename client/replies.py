@@ -12,7 +12,7 @@ import time
 
 import xmltodict
 
-from client.constants import MsgType
+from constants import MsgType
 from utils.WXBizMsgCrypt import WXBizMsgCrypt
 from settings import WX_OPEN_CONFIG
 import random

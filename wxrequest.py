@@ -13,9 +13,10 @@ import json
 import requests
 
 from cache.cache import MemoryCache
-from client.constants import ACCESS_TOKEN
+from constants import ACCESS_TOKEN, COMPONENT_ACCESS_TOKEN
 from client.domain import wxerror
 import exceptions
+import constants
 
 cache = MemoryCache()
 
@@ -30,6 +31,7 @@ class WeChatRequest:
         self.requests = requests
         self.access_token = self.__cache.get(ACCESS_TOKEN)
         self.exceptions = exceptions
+        self.constants = constants
 
     @staticmethod
     def render(content):
@@ -67,3 +69,13 @@ class WeChatRequest:
         suffix = self.get_suffix(path).lower()
         if suffix not in suffix_arr:
             raise self.exceptions.ValidationException('File types must be in: %s' % suffix_arr)
+
+
+class WeChatThirdRequest(WeChatRequest):
+    """
+    微信第三方平台请求基类
+    """
+
+    def __init__(self):
+        super().__init__()
+        self.component_access_token = self.get_cache().get(COMPONENT_ACCESS_TOKEN)
